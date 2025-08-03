@@ -3,8 +3,7 @@ import { Config } from '../types';
 const config: Config = {
   // RSS feed URLs for cloud providers
   rssSources: {
-    aws: 'https://status.aws.amazon.com/rss/all.rss',
-    azure: 'https://azure.status.microsoft.com/en-us/status/feed/'
+    aws: 'https://status.aws.amazon.com/rss/all.rss'
   },
   
   // Agent scheduling configuration
