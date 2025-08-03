@@ -102,6 +102,11 @@ class Phase0System {
         this.statusInterval = null;
       }
 
+      if (this.completionInterval) {
+        clearInterval(this.completionInterval);
+        this.completionInterval = null;
+      }
+
       const duration = this.startTime ? new Date().getTime() - this.startTime.getTime() : 0;
       const hours = Math.floor(duration / (1000 * 60 * 60));
       const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
@@ -139,8 +144,10 @@ class Phase0System {
     console.log(`📊 Status: ${status.cycles}/48 cycles (${status.progress}) - Uptime: ${status.uptime}`);
   }
 
+  private completionInterval: NodeJS.Timeout | null = null;
+
   private monitorCompletion(): void {
-    const checkInterval = setInterval(() => {
+    this.completionInterval = setInterval(async () => {
       if (this.cycleCount >= 48) {
         console.log('\n🎉 SUCCESS: Completed 48 data cycles!');
         console.log('✅ Phase 0 stability test passed');
@@ -151,8 +158,11 @@ class Phase0System {
           duration: this.startTime ? new Date().getTime() - this.startTime.getTime() : 0
         });
         
-        clearInterval(checkInterval);
-        this.stop();
+        if (this.completionInterval) {
+          clearInterval(this.completionInterval);
+          this.completionInterval = null;
+        }
+        await this.stop();
       }
     }, 30000); // Check every 30 seconds
   }

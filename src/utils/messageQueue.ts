@@ -12,6 +12,8 @@ class MessageQueue {
   private type: 'redis' | 'memory';
   private memoryQueue: Map<string, MessageWithTimestamp[]>;
   private redisClient: RedisClientType | null;
+  private intervals: Map<string, NodeJS.Timeout> = new Map();
+  private subscribers: Map<string, RedisClientType> = new Map();
 
   constructor() {
     this.type = config.messageQueue.type;
@@ -48,12 +50,11 @@ class MessageQueue {
     }
   }
 
-  private intervals: Map<string, NodeJS.Timeout> = new Map();
-
   async subscribe(channel: string, callback: MessageCallback): Promise<void> {
     if (this.type === 'redis' && this.redisClient) {
       const subscriber = this.redisClient.duplicate();
       await subscriber.connect();
+      this.subscribers.set(channel, subscriber);
       await subscriber.subscribe(channel, (message: string) => {
         callback(JSON.parse(message));
       });
@@ -90,6 +91,12 @@ class MessageQueue {
       clearInterval(intervalId);
     }
     this.intervals.clear();
+    
+    // Close all Redis subscribers
+    for (const [channel, subscriber] of this.subscribers) {
+      await subscriber.quit();
+    }
+    this.subscribers.clear();
     
     if (this.redisClient) {
       await this.redisClient.quit();
