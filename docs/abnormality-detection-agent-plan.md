@@ -3,14 +3,15 @@
 ## Overview
 Build an intelligent system monitoring agent using OpenAI Agents SDK to detect anomalies and coordinate incident response. This agent will act as an orchestration layer on top of existing monitoring infrastructure.
 
-## 🚀 MVP: Simple Threshold Alert Agent (Start Here!)
+## 🚀 MVP: PagerDuty Incident Context + Monitoring Agent (Start Here!)
 
-**Build this first** - A single Monitor Agent that detects CPU/memory threshold violations and sends Slack alerts.
+**Build this first** - A smart Monitor Agent that checks PagerDuty incidents, correlates with system metrics, and provides context-aware alerts.
 
 **Why This MVP**:
-- Demonstrates core OpenAI Agents SDK usage
+- **Starts with real incident data** from PagerDuty MCP server
+- Correlates incidents with Prometheus metrics for deeper insights  
 - Uses built-in MCP server support (no separate MCP library needed!)
-- Provides immediate value with threshold monitoring
+- Provides immediate value with intelligent incident analysis
 - Foundation for more complex features
 - **Can be built and tested in one day**
 
@@ -18,28 +19,67 @@ Build an intelligent system monitoring agent using OpenAI Agents SDK to detect a
 ```mermaid
 graph LR
     subgraph "Our Application"
-        AGENT[Monitor Agent<br/>OpenAI Agents SDK]
+        AGENT[Incident Context Agent<br/>OpenAI Agents SDK]
         MCP_CLIENT[Built-in MCP Client]
     end
     
     subgraph "Existing MCP Servers"
+        PD_MCP[PagerDuty MCP Server]
         PROM_MCP[Prometheus MCP Server]
         SLACK_MCP[Slack MCP Server]
     end
     
     subgraph "External Services"
+        PAGERDUTY[PagerDuty API]
         PROM[Prometheus API]
         SLACK[Slack API]
     end
     
     AGENT --> MCP_CLIENT
+    MCP_CLIENT --> PD_MCP
     MCP_CLIENT --> PROM_MCP
     MCP_CLIENT --> SLACK_MCP
+    PD_MCP --> PAGERDUTY
     PROM_MCP --> PROM
     SLACK_MCP --> SLACK
 ```
 
-**Key Point**: We act as an MCP **client** connecting to existing MCP servers, not building our own servers.
+**Key Point**: We start with PagerDuty incidents as primary context, then correlate with metrics and send intelligent alerts.
+
+### MVP Workflow
+```mermaid
+sequenceDiagram
+    participant Agent as Incident Context Agent
+    participant PD as PagerDuty MCP
+    participant PROM as Prometheus MCP  
+    participant SLACK as Slack MCP
+    
+    loop Every 5 minutes
+        Agent->>PD: list_incidents (active)
+        PD-->>Agent: Current incidents list
+        
+        alt Has Active Incidents
+            Agent->>PD: get_incident (details)
+            PD-->>Agent: Incident details + affected services
+            
+            Agent->>PROM: execute_query (related metrics)
+            PROM-->>Agent: Service metrics during incident
+            
+            Agent->>Agent: Analyze correlation & context
+            Agent->>SLACK: send_notification (enriched alert)
+        else No Active Incidents
+            Agent->>PROM: execute_query (health check)
+            PROM-->>Agent: System metrics
+            Agent->>Agent: Check for emerging issues
+        end
+    end
+```
+
+**Advantages of PagerDuty-First Approach**:
+- **Real incidents first**: Start with actual problems, not just threshold breaches
+- **Service context**: PagerDuty provides service mapping and impact assessment  
+- **Alert fatigue reduction**: Only enhance existing incidents vs. creating new noise
+- **Team alignment**: Work with what teams are already tracking
 
 ### MVP Project Structure (Simplified)
 ```
