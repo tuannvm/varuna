@@ -3,7 +3,13 @@
 
 ## Executive Summary
 
-Build an intelligent proactive monitoring system using OpenAI Agents SDK that predicts cloud provider outages before they impact ad tech infrastructure. The system goes beyond traditional monitoring by implementing **dual-layer proactivity**: predicting incidents before they occur AND automatically discovering new data sources to improve prediction accuracy over time.
+**Research Objective**: Investigate whether external signals (cloud status, social media) can provide earlier warning of infrastructure incidents than internal monitoring alone for ad tech systems.
+
+**Approach**: Build an AI agent system to test correlation between external signals and actual business impact, with automated discovery of new signal sources.
+
+**Expected Outcome**: Empirical data on whether proactive monitoring provides business value. Success is proving/disproving the hypothesis, not guaranteed early warning.
+
+The system implements **dual-layer research**: testing incident detection from external signals AND investigating automated discovery of new monitoring sources.
 
 ### Dual-Layer Proactive Architecture
 
@@ -27,7 +33,7 @@ The system becomes smarter over time through:
 - **Validation Pipeline**: Tests new sources for 7+ days before integration
 - **Feedback Loops**: Adjusts source weights based on prediction accuracy
 
-**Key Innovation**: Transform from reactive alerting to proactive early warning with self-expanding intelligence that automatically discovers better data sources as cloud environments evolve.
+**Research Innovation**: Investigate whether reactive alerting can be enhanced with external signal correlation and automated discovery of new monitoring sources as cloud environments evolve.
 
 **Important Clarification**: This system detects early indicators of ongoing cloud incidents, not future outages. The "proactive" element refers to acting on external signals before internal systems show impact. **The actual time advantage is unknown and needs to be validated through implementation and testing.**
 
@@ -38,7 +44,7 @@ The system becomes smarter over time through:
 - SLA breaches with advertising partners  
 - Manual incident response delays (15-30 minutes to detection)
 
-**Solution**: Proactive monitoring that detects cloud issues 15-45 minutes before internal systems show degradation.
+**Research Hypothesis**: External signals may provide earlier warning than internal monitoring alone, but the actual time advantage (if any) needs empirical validation.
 
 ## 🏗️ System Architecture
 
@@ -1348,53 +1354,60 @@ const metricsAnalysisMCP = {
 
 ## 🚀 Implementation Phases
 
-### Phase 0: MVP Proactive Monitor (Week 1-2)
-**Deliverable**: Basic proactive monitoring with risk scoring
+### Phase 0: Multi-Agent RSS Monitoring MVP (Week 1-6)
+**Deliverable**: 3-agent system with specialized roles and coordination
 
 **Components**:
-- Orchestrator agent with parallel execution
-- Cloud status agent (AWS, GCP, Azure)
-- Simple risk scoring (cloud signals only)
-- Slack alerting for high-risk scores
+- Orchestrator agent (schedules tasks, aggregates results)
+- RSS collector agent (fetches and parses AWS/GCP status feeds)
+- Analysis agent (processes RSS data, extracts structured information)
+- Simple message queue for agent communication (Redis/in-memory)
+- Structured logging with agent traces
 
 **Success Criteria**:
-- Detects cloud provider "investigating" status
-- Calculates basic risk score (0-100)  
-- Sends Slack alerts for scores > 60
-- Runs every 5 minutes without failures
+- Orchestrator schedules RSS collection every 15 minutes
+- Collector agent fetches feeds and passes raw data to analysis agent
+- Analysis agent extracts service names, status levels, timestamps
+- Agents log all handoffs with correlation IDs
+- System processes 48 data cycles (12 hours) without failure
+- **Key Goal**: Demonstrate reliable multi-agent task distribution and coordination
 
-### Phase 1: Multi-Source Intelligence (Week 3-4)
-**Deliverable**: Social signals and internal metrics integration
+### Phase 1: Multi-Source Intelligence + Notifications (Week 5-10)
+**Deliverable**: Social signals, internal metrics integration, and operational alerting
 
 **New Components**:
 - Social intelligence agent (Twitter, Reddit, HackerNews)
 - Internal metrics agent (Prometheus/DataDog integration)
 - Enhanced risk scoring with all 4 components
+- **Slack/PagerDuty notification system**
 - Correlation analysis between sources
 
 **Success Criteria**:
 - Incorporates social media signals in risk calculation
-- Correlates external signals with internal metrics
-- Reduces false positives by 40%
-- Provides 15-30 minute early warning
+- Correlates external signals with internal metrics  
+- Sends actionable alerts via Slack for scores > 60
+- Achieves <20% false positive rate
+- Measures actual early warning time (if any)
 
-### Phase 2: Source Discovery (Week 5-6)
-**Deliverable**: Automated discovery of new monitoring sources
+### Phase 2: Advanced Multi-Agent Collaboration (Week 11-16)
+**Deliverable**: Sophisticated multi-agent orchestration and decision making
 
 **New Components**:
-- Data source discovery agent
-- Source validation and testing framework
-- Automated MCP integration for new sources
-- Source reliability scoring
+- Advanced agent handoff protocols
+- Consensus-based decision making between agents
+- Agent performance monitoring and feedback loops
+- Dynamic agent role assignment based on signal types
+- Cross-agent learning and knowledge sharing
 
 **Success Criteria**:
-- Suggests 2-3 new sources per week
-- Validates source reliability > 80%
-- Auto-integrates validated sources
-- Maintains audit trail of discoveries
+- Agents collaborate to reach consensus on risk scores
+- Dynamic workload distribution based on agent expertise
+- Agents learn from each other's successes/failures
+- Complex multi-step decision workflows across agents
+- Maintains audit trail of agent interactions
 
-### Phase 3: Advanced Actions (Week 7-8)
-**Deliverable**: Automated response and remediation
+### Phase 3: Production Hardening (Week 17-20)
+**Deliverable**: Production-ready system with advanced features
 
 **New Components**:
 - Action execution agent
@@ -1572,4 +1585,8 @@ This is **primarily a research project** to investigate whether external signals
 
 ---
 
-This plan provides a structured approach to **researching** whether sophisticated proactive monitoring using AI agents can provide business value for ad tech infrastructure. The emphasis is on empirical validation rather than assumed benefits.
+## 📋 Final Assessment
+
+This plan provides a structured approach to **researching** whether external signals can enhance incident detection for ad tech infrastructure using AI agents. The emphasis is on empirical validation rather than assumed benefits.
+
+**Document Status**: Research proposal with honest risk assessment, realistic timeline, and detailed cost analysis. Success is measured by knowledge gained, not guaranteed operational improvements.
