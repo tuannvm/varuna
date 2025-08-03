@@ -63,7 +63,24 @@ export interface AgentMessage {
   type: string;
   correlationId: string;
   timestamp?: string;
+  fromAgent?: string;
+  result?: any;
+  completedAt?: string;
   [key: string]: any;
+}
+
+export interface CollectionTask extends AgentMessage {
+  type: 'collect_rss';
+  sources: string[];
+}
+
+export interface OrchestratorStatus {
+  name: string;
+  isRunning: boolean;
+  scheduledSources: string[];
+  intervalMinutes: number;
+  lastCollectionTime: string | null;
+  totalCollections: number;
 }
 
 export interface AgentResult extends AgentMessage {

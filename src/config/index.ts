@@ -1,32 +1,56 @@
-import { Config } from '../types';
+import { AppConfig } from './types';
+import { baseConfig } from './base';
+import { developmentConfig } from './development';
+import { productionConfig } from './production';
+import { testConfig } from './test';
 
-const config: Config = {
-  // RSS feed URLs for cloud providers
-  rssSources: {
-    aws: 'https://status.aws.amazon.com/rss/all.rss'
-  },
+function getEnvironment(): 'development' | 'production' | 'test' {
+  return (process.env.NODE_ENV as any) || 'development';
+}
+
+function mergeConfigs(base: AppConfig, override: Partial<AppConfig>): AppConfig {
+  return {
+    rss: { ...base.rss, ...override.rss },
+    scheduling: { ...base.scheduling, ...override.scheduling },
+    messageQueue: { 
+      ...base.messageQueue, 
+      ...override.messageQueue,
+      redis: { ...base.messageQueue.redis, ...override.messageQueue?.redis }
+    },
+    logging: { ...base.logging, ...override.logging },
+    monitoring: { ...base.monitoring, ...override.monitoring }
+  };
+}
+
+function createConfig(): AppConfig {
+  const env = getEnvironment();
   
-  // Agent scheduling configuration
-  scheduling: {
-    rssCollectionIntervalMs: 15 * 60 * 1000, // 15 minutes
-    maxRetries: 3,
-    retryDelayMs: 5000
-  },
-
-  // Message queue configuration
-  messageQueue: {
-    type: 'memory', // 'redis' or 'memory'
-    redis: {
-      host: 'localhost',
-      port: 6379
-    }
-  },
-
-  // Logging configuration
-  logging: {
-    level: 'info',
-    format: 'json'
+  switch (env) {
+    case 'production':
+      return mergeConfigs(baseConfig, productionConfig);
+    case 'test':
+      return mergeConfigs(baseConfig, testConfig);
+    case 'development':
+    default:
+      return mergeConfigs(baseConfig, developmentConfig);
   }
+}
+
+const config = createConfig();
+
+// Legacy exports for backward compatibility
+export default {
+  rssSources: config.rss.sources,
+  rss: config.rss,
+  collection: {
+    intervalMinutes: config.scheduling.rssCollectionIntervalMs / (1000 * 60)
+  },
+  scheduling: config.scheduling,
+  messageQueue: config.messageQueue,
+  logging: config.logging,
+  monitoring: config.monitoring
 };
 
-export default config;
+// New structured export
+export { config as appConfig };
+export * from './types';
