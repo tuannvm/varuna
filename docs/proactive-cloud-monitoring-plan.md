@@ -3,13 +3,13 @@
 
 ## Executive Summary
 
-**Research Objective**: Investigate whether external signals (cloud status, social media) can provide earlier warning of infrastructure incidents than internal monitoring alone for ad tech systems.
+**Research Objective**: Investigate whether external RSS signals from cloud providers can provide earlier warning of infrastructure incidents than internal monitoring alone for ad tech systems.
 
-**Approach**: Build an AI agent system to test correlation between external signals and actual business impact, with automated discovery of new signal sources.
+**Approach**: Build a multi-agent system using OpenAI Agents SDK to progressively test correlation between external RSS feeds and actual business impact, with gradual expansion to additional data sources.
 
-**Expected Outcome**: Empirical data on whether proactive monitoring provides business value. Success is proving/disproving the hypothesis, not guaranteed early warning.
+**Implementation Strategy**: Start with minimal 3-agent RSS monitoring system, then expand to 4-agent correlation testing, finally scaling to 6-agent system with auto-discovery capabilities.
 
-The system implements **dual-layer research**: testing incident detection from external signals AND investigating automated discovery of new monitoring sources.
+**Expected Outcome**: Empirical data on whether proactive monitoring provides business value, with focus on demonstrating reliable multi-agent coordination at each phase. Success is proving/disproving the correlation hypothesis through systematic agent collaboration.
 
 ### Dual-Layer Proactive Architecture
 
@@ -1372,65 +1372,56 @@ const metricsAnalysisMCP = {
 - System processes 48 data cycles (12 hours) without failure
 - **Key Goal**: Demonstrate reliable multi-agent task distribution and coordination
 
-### Phase 1: Multi-Source Intelligence + Notifications (Week 5-10)
-**Deliverable**: Social signals, internal metrics integration, and operational alerting
+### Phase 1: Internal Metrics Integration + Notifications (Week 7-12)
+**Deliverable**: Internal metrics agent and notification system building on Phase 0 foundation
 
 **New Components**:
-- Social intelligence agent (Twitter, Reddit, HackerNews)
-- Internal metrics agent (Prometheus/DataDog integration)
-- Enhanced risk scoring with all 4 components
-- **Slack/PagerDuty notification system**
-- Correlation analysis between sources
+- Internal metrics agent (simple health check endpoints, error rates)
+- Correlation engine (compares RSS signals with internal metrics)
+- Slack notification agent (posts alerts based on correlation scores)
+- Enhanced orchestrator (coordinates 4 agents)
+- Basic alerting rules engine
 
 **Success Criteria**:
-- Incorporates social media signals in risk calculation
-- Correlates external signals with internal metrics  
-- Sends actionable alerts via Slack for scores > 60
-- Achieves <20% false positive rate
-- Measures actual early warning time (if any)
+- 4-agent system operates reliably (orchestrator + RSS + analysis + internal metrics)
+- Correlation engine identifies time-lag patterns between external/internal signals
+- Slack agent sends structured alerts for correlation scores > 70
+- System maintains 7-day uptime with all agents communicating
+- **Key Goal**: Prove external signals correlate with actual internal issues
 
-### Phase 2: Advanced Multi-Agent Collaboration (Week 11-16)
-**Deliverable**: Sophisticated multi-agent orchestration and decision making
+### Phase 2: Multi-Source Data Discovery (Week 13-18)
+**Deliverable**: Auto-discovery agent and expanded data sources building on 4-agent foundation
 
 **New Components**:
-- Advanced agent handoff protocols
-- Consensus-based decision making between agents
-- Agent performance monitoring and feedback loops
-- Dynamic agent role assignment based on signal types
-- Cross-agent learning and knowledge sharing
+- Data source discovery agent (auto-finds new RSS feeds, APIs, status pages)
+- Source validation agent (tests reliability of discovered sources)
+- Enhanced correlation engine (handles multiple external sources)
+- Source reliability scoring system
+- Expanded orchestrator (coordinates 6 agents)
 
 **Success Criteria**:
-- Agents collaborate to reach consensus on risk scores
-- Dynamic workload distribution based on agent expertise
-- Agents learn from each other's successes/failures
-- Complex multi-step decision workflows across agents
-- Maintains audit trail of agent interactions
+- Discovery agent identifies 5+ new relevant data sources per week
+- Validation agent tests and scores source reliability (>80% uptime required)
+- 6-agent system maintains coordination and communication
+- Correlation engine processes multiple external sources simultaneously
+- **Key Goal**: Demonstrate scalable agent coordination with dynamic data source expansion
 
-### Phase 3: Production Hardening (Week 17-20)
-**Deliverable**: Production-ready system with advanced features
+### Phase 3: Production Hardening (Week 19-24)
+**Deliverable**: Production-ready 6-agent system with reliability and security
 
 **New Components**:
-- Action execution agent
-- Pre-approved remediation workflows
-- Failover preparation automation
-- Integration with incident management
+- Agent health monitoring and auto-restart capabilities
+- Circuit breakers and retry logic for all external calls
+- Security audit and access controls for agent communication
+- Performance metrics and optimization for message queuing
+- Integration with existing incident management systems
 
 **Success Criteria**:
-- Executes pre-approved actions automatically
-- Prepares failover for critical infrastructure
-- Creates incident tickets with rich context
-- Maintains human oversight for critical actions
-
-### Phase 4: Production Hardening (Week 9-10)
-**Deliverable**: Production-ready system with monitoring
-
-**Enhancements**:
-- Error handling and retry logic
-- Performance optimization and caching
-- Security audit and access controls
-- Comprehensive logging and monitoring
-
-**Success Criteria**:
+- 6-agent system maintains 99.5% uptime over 30-day period
+- All external API failures handled gracefully with circuit breakers
+- Agent failures trigger automatic restarts within 60 seconds
+- Security audit passes with no critical vulnerabilities
+- **Key Goal**: Demonstrate production-ready multi-agent system reliability
 - 99.9% uptime for monitoring system
 - <30 second end-to-end latency
 - Zero security vulnerabilities
@@ -1438,24 +1429,29 @@ const metricsAnalysisMCP = {
 
 ## 📈 Success Metrics
 
-### Technical KPIs
-- **Early Warning Time**: 15-45 minutes before internal systems show impact
-- **False Positive Rate**: <15% (industry standard: 30-50%)
-- **Detection Accuracy**: >85% of actual cloud provider incidents
-- **System Latency**: <30 seconds end-to-end processing
-- **Source Coverage**: Monitor 15+ data sources continuously
+### Phase 0 Success Criteria
+- **Agent Coordination**: 3-agent system (orchestrator, RSS collector, analysis) operates reliably
+- **Data Processing**: Successfully processes RSS feeds from AWS/GCP every 15 minutes
+- **System Stability**: 48 continuous data cycles (12 hours) without agent failure
+- **Communication Quality**: All agent handoffs logged with correlation IDs
 
-### Business KPIs  
-- **Revenue Protection**: Prevent $50k+ losses per month through early warnings
-- **Incident Response Time**: Reduce MTTD by 60% (from 30min to 12min)
-- **On-call Load**: Reduce after-hours pages by 40%
-- **SLA Compliance**: Improve partner SLA compliance by 25%
+### Phase 1 Success Criteria  
+- **Correlation Detection**: Identifies time-lag patterns between external RSS and internal metrics
+- **4-Agent Coordination**: Orchestrator successfully coordinates all agents
+- **Alert Generation**: Slack notifications triggered for correlation scores >70
+- **System Uptime**: 7-day continuous operation with all agents communicating
 
-### Operational KPIs
-- **Discovery Rate**: Find 2-3 new valuable sources per month
-- **Source Reliability**: Maintain >80% reliability for all integrated sources
-- **Team Adoption**: 90% of engineering team uses proactive alerts
-- **Cost Efficiency**: System costs <$2k/month vs potential savings >$50k/month
+### Phase 2 Success Criteria
+- **Source Discovery**: Auto-discovers 5+ new data sources per week
+- **Source Validation**: Tests and validates source reliability (>80% uptime)
+- **6-Agent Scalability**: Maintains coordination across expanded agent network
+- **Multi-Source Processing**: Correlation engine handles multiple external sources simultaneously
+
+### Phase 3 Success Criteria
+- **Production Reliability**: 99.5% uptime over 30-day period
+- **Fault Tolerance**: Circuit breakers handle all external API failures gracefully
+- **Security Compliance**: Security audit passes with no critical vulnerabilities
+- **Performance**: Agent failures trigger automatic restarts within 60 seconds
 
 ## 🔒 Security & Compliance
 
